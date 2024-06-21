@@ -1,0 +1,38 @@
+.header {
+    display: flex;
+    width: 1200px;
+    height: 88px;
+    padding: 20px 0px 40px 0px;
+    margin: 0 auto;
+    justify-content: space-between;
+    align-items: center;
+    top: 40px;
+    left: 40px;
+    border: 2px 0px 0px 0px;
+    opacity: 0px;
+}
+
+.navigationLink {
+    display: flex;
+    width: Hug (178px)px;
+    height: Hug (56px)px;
+    padding: 16px 20px 16px 20px;
+    gap: 8px;
+    border-radius: 40px 0px 0px 0px;
+    border: 1px 0px 0px 0px;
+    opacity: 0px;
+}
+
+.leftBlock1,
+.leftBlock2 {
+    margin-right: 20px;
+}
+
+.centerBlock {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.rightBlock {
+    margin-left: auto;
+}

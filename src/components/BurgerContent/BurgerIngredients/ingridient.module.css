@@ -1,0 +1,75 @@
+
+.ingridients {
+  width: 600px;
+  height: 756px;
+  top: 156px;
+  gap: 10px;
+  overflow-y: auto;
+  scrollbar-color: #8585AD #2F2F37;
+}
+
+.ingridientTitle {
+  text-align: left;
+}
+
+.ingridientsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 0px;
+  list-style: none;
+}
+
+.ingridientsItem {
+  width: calc(46% - 0px); 
+  height: 208px;
+  gap: 0px;
+  margin: 0;
+  cursor: pointer;
+}
+.ingridientsItem:nth-child(2n+1) { 
+ flex: 1 1; 
+}
+.ingridientsItem:last-child {
+      align-self: flex-start;
+    }
+
+.priceBox{
+  flex-direction: row;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 4px 0px 4px 0px;
+}
+.name{
+font-size: 16px;
+font-weight: 400;
+line-height: 24px;
+text-align: center;
+}
+
+.colomnPuns {
+  width: 600px;
+}
+
+.ModalHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.ingridentModal {
+  display: flex;
+  justify-content: center;
+   gap: 28px;
+}
+
+.modalContentUl {
+    margin: 0;
+    padding: 0;
+}
+
+.modalContentLi {
+  list-style: none;
+}
+

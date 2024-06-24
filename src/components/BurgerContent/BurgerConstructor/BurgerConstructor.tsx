@@ -15,8 +15,6 @@ const BurgerConstructor: React.FC = () => {
   const [modalActive, setIsModalActive] = useState(false);
 
   // Функция для закрытия модального окна
-
- 
   const handleModalClose = () => {
     setIsModalActive(false);
   };
@@ -24,10 +22,12 @@ const BurgerConstructor: React.FC = () => {
   return (
     <>
       <section className={styles.contentConstructor}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <div
+          className={styles.listConstructor}
+        >
           {products.map((itemBurger, index) => {
             // Example condition to lock certain items
-          //  const isLocked = index === 0 || index === products.length - 1;
+            //  const isLocked = index === 0 || index === products.length - 1;
             //const isLocked = itemBurger.someProperty === "someValue";
 
             return (

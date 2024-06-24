@@ -7,7 +7,7 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import products from "../../../utils/data";
-import ModalWindow from "../../../utils/ModalWindow/ModalWindow";
+import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
 import styles from "./burgerStyles.module.css";
 import CheckMark from "./SVG/CheckMark";
 
@@ -15,22 +15,11 @@ const BurgerConstructor: React.FC = () => {
   const [modalActive, setIsModalActive] = useState(false);
 
   // Функция для закрытия модального окна
+
+ 
   const handleModalClose = () => {
     setIsModalActive(false);
   };
-
-const handleModalKeyClose = (event: KeyboardEvent) => {
-  if (event.key === "Escape") {
-    handleModalClose();
-  }
-};
-
-useEffect(() => {
-  document.addEventListener("keydown", handleModalKeyClose);
-  return () => {
-    document.removeEventListener("keydown", handleModalKeyClose);
-  };
-}, []);
 
   return (
     <>
@@ -38,17 +27,18 @@ useEffect(() => {
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {products.map((itemBurger, index) => {
             // Example condition to lock certain items
-            const isLocked = index === 0 || index === products.length - 1;
+          //  const isLocked = index === 0 || index === products.length - 1;
+            //const isLocked = itemBurger.someProperty === "someValue";
 
             return (
-              <div>
+              <div key={itemBurger._id}>
                 <DragIcon type="primary" />
                 <ConstructorElement
                   key={index}
                   text={itemBurger.name}
                   price={itemBurger.price}
                   thumbnail={itemBurger.image_mobile}
-                  isLocked={isLocked}
+                  isLocked={itemBurger.isLocked}
                 />
               </div>
             );

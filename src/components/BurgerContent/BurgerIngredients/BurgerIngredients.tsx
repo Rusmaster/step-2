@@ -6,7 +6,7 @@ import {
   CurrencyIcon,
   Tab,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import ModalWindow from "../../../utils/ModalWindow/ModalWindow";
+import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 
 // Типизация для бля блока "Продукты"
@@ -31,7 +31,7 @@ const sortProducts = (products: Product[]): Product[] => {
     .sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
 };
 
-const BurgerIngridients: React.FC = () => {
+const BurgerIngredients: React.FC = () => {
   const sortedProducts = sortProducts(products as Product[]);
   const [current, setCurrent] = React.useState("bun");
 
@@ -73,6 +73,7 @@ const BurgerIngridients: React.FC = () => {
   };
 
   //Закрытие модального окна с помощью кнопки Esc
+  {/* 
   const handleModalKeyClose = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       handleModalClose();
@@ -85,7 +86,7 @@ const BurgerIngridients: React.FC = () => {
       document.removeEventListener("keydown", handleModalKeyClose);
     };
   }, []);
-
+*/}
   return (
     <>
       <h1
@@ -294,4 +295,4 @@ const BurgerIngridients: React.FC = () => {
   );
 };
 
-export default BurgerIngridients;
+export default BurgerIngredients;

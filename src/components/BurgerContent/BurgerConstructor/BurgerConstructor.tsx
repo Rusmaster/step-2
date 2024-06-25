@@ -6,53 +6,77 @@ import {
   CloseIcon,
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import products from "../../../utils/data";
-import ModalWindow from "../../../utils/ModalWindow/ModalWindow";
+import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
 import styles from "./burgerStyles.module.css";
 import CheckMark from "./SVG/CheckMark";
 
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  image_mobile: string;
+  isLocked: boolean;
+}
+
 const BurgerConstructor: React.FC = () => {
   const [modalActive, setIsModalActive] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  //const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          "https://norma.nomoreparties.space/api/ingredients"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        setProducts(data.data);
+        setIsLoading(false);
+        setHasError(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+        setHasError(true);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // Функция для закрытия модального окна
   const handleModalClose = () => {
     setIsModalActive(false);
   };
 
-const handleModalKeyClose = (event: KeyboardEvent) => {
-  if (event.key === "Escape") {
-    handleModalClose();
-  }
-};
 
-useEffect(() => {
-  document.addEventListener("keydown", handleModalKeyClose);
-  return () => {
-    document.removeEventListener("keydown", handleModalKeyClose);
-  };
-}, []);
 
   return (
     <>
       <section className={styles.contentConstructor}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {products.map((itemBurger, index) => {
-            // Example condition to lock certain items
-            const isLocked = index === 0 || index === products.length - 1;
-
-            return (
-              <div>
+        <div className={styles.listConstructor}>
+          {isLoading && <p>Загрузка...</p>}
+          {hasError && <p>Произошла ошибка</p>}
+          {!isLoading &&
+            !hasError &&
+            products.map((itemBurger, index) => (
+              <div key={itemBurger._id}>
                 <DragIcon type="primary" />
                 <ConstructorElement
                   key={index}
                   text={itemBurger.name}
                   price={itemBurger.price}
                   thumbnail={itemBurger.image_mobile}
-                  isLocked={isLocked}
+                  isLocked={itemBurger.isLocked}
+
                 />
               </div>
-            );
-          })}
+            ))}
         </div>
       </section>
       <section className={`ml-1 mr-1 mb-1 mt-9 ${styles.boxForButton}`}>
@@ -76,6 +100,7 @@ useEffect(() => {
       </section>
 
       {/* Модальное окно */}
+      {/*  {selectedProduct && ( */}
       <ModalWindow active={modalActive} setActive={setIsModalActive}>
         <div className={styles.boxModalClose}>
           <div className={`p-2`} style={{ cursor: "pointer" }}>
@@ -83,7 +108,9 @@ useEffect(() => {
           </div>
         </div>
         <p className="mt-8 text text_type_digits-large">12345</p>
-        <p className="mb-10 text text_type_main-medium">Идентификатор заказа</p>
+        <p className="mb-10 text text_type_main-medium">
+          Идентификатор заказа
+        </p>
         <div>
           <CheckMark />
         </div>
@@ -95,7 +122,9 @@ useEffect(() => {
           Дождитесь готовности на орбитальной станции
         </p>
       </ModalWindow>
+      {/*   )}*/}
     </>
   );
 };
+
 export default BurgerConstructor;

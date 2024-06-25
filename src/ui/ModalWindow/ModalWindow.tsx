@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styles from "./styles.module.css";
 
 interface ModalWindowProps {
@@ -8,6 +8,25 @@ interface ModalWindowProps {
 }
 
 const ModalWindow: React.FC<ModalWindowProps> = ({ active, setActive, children }) => {
+  
+useEffect(()=> {
+ const handleModalKeyClose = (event:KeyboardEvent) => {
+if (event.key === "Escape"){
+   setActive(false);
+}
+  };
+if(active){
+  window.addEventListener("keydown", handleModalKeyClose);
+}
+return () => {
+  window.removeEventListener("keydown", handleModalKeyClose);
+};
+
+},[active, setActive] );
+
+
+
+ 
   return (
     <div
       className={active ? `${styles.modal} ${styles.active}` : styles.modal}

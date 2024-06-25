@@ -6,6 +6,11 @@
     scrollbar-color: #8585AD #2F2F37;
     scroll-padding-top: 100px;
 }
+.listConstructor{
+     display: flex; 
+     flex-direction: column;
+     gap: 10px;
+}
 
 .boxForButton {
     display: flex;

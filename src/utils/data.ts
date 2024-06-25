@@ -13,6 +13,7 @@ export interface Product {
   image_mobile: string;
   image_large: string;
   __v: number;
+  isLocked: boolean;
 }
 
 const products: Product[] = [
@@ -29,6 +30,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/bun-02-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/bun-02-large.png",
     __v: 0,
+    isLocked: true,
   },
   {
     _id: "60666c42cc7b410027a1a9b5",
@@ -43,6 +45,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/meat-04-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/meat-04-large.png",
     __v: 0,
+    isLocked: false,
   },
   {
     _id: "60666c42cc7b410027a1a9b6",
@@ -57,6 +60,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/meat-01-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/meat-01-large.png",
     __v: 0,
+    isLocked: true,
   },
   {
     _id: "60666c42cc7b410027a1a9b7",
@@ -71,6 +75,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/sauce-02-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/sauce-02-large.png",
     __v: 0,
+    isLocked: false,
   },
   {
     _id: "60666c42cc7b410027a1a9b4",
@@ -85,6 +90,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/meat-02-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/meat-02-large.png",
     __v: 0,
+    isLocked: true,
   },
   {
     _id: "60666c42cc7b410027a1a9b9",
@@ -99,6 +105,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/sauce-03-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/sauce-03-large.png",
     __v: 0,
+    isLocked: false,
   },
   {
     _id: "60666c42cc7b410027a1a9b8",
@@ -113,6 +120,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/sauce-04-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/sauce-04-large.png",
     __v: 0,
+    isLocked: false,
   },
   {
     _id: "60666c42cc7b410027a1a9bc",
@@ -127,6 +135,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/sp_1-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/sp_1-large.png",
     __v: 0,
+    isLocked: false,
   },
   {
     _id: "60666c42cc7b410027a1a9bb",
@@ -143,6 +152,7 @@ const products: Product[] = [
     image_large:
       "https://code.s3.yandex.net/react/code/mineral_rings-large.png",
     __v: 0,
+    isLocked: false,
   },
   {
     _id: "60666c42cc7b410027a1a9ba",
@@ -157,6 +167,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/sauce-01-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/sauce-01-large.png",
     __v: 0,
+    isLocked: true,
   },
   {
     _id: "60666c42cc7b410027a1a9bd",
@@ -171,6 +182,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/core-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/core-large.png",
     __v: 0,
+    isLocked: true,
   },
   {
     _id: "60666c42cc7b410027a1a9be",
@@ -185,6 +197,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/salad-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/salad-large.png",
     __v: 0,
+    isLocked: true,
   },
   {
     _id: "60666c42cc7b410027a1a9b3",
@@ -199,6 +212,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/meat-03-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/meat-03-large.png",
     __v: 0,
+    isLocked: true,
   },
   {
     _id: "60666c42cc7b410027a1a9bf",
@@ -213,6 +227,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/cheese-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/cheese-large.png",
     __v: 0,
+    isLocked: true,
   },
   {
     _id: "60666c42cc7b410027a1a9b2",
@@ -227,6 +242,7 @@ const products: Product[] = [
     image_mobile: "https://code.s3.yandex.net/react/code/bun-01-mobile.png",
     image_large: "https://code.s3.yandex.net/react/code/bun-01-large.png",
     __v: 0,
+    isLocked: false,
   },
 ];
 

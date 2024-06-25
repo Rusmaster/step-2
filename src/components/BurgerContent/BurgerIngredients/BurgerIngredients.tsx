@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from "react";
-import products from "../../../utils/data";
 import ingridient from "./ingridient.module.css";
 import modal from "./modal.module.css";
 import {
@@ -31,8 +30,34 @@ const sortProducts = (products: Product[]): Product[] => {
     .sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
 };
 
+const ProductItem: React.FC<{
+  data: Product;
+  onClick: (product: Product) => void;
+}> = ({ data, onClick }) => {
+
+  return (
+    <li className={ingridient.ingridientsItem} onClick={() => onClick(data)}>
+      <img className="ml-2 mr-2" src={data.image} alt={data.name} />
+      <div className={ingridient.priceBox}>
+        <p className={`text text_type_main-default`}>{data.price}</p>
+        <CurrencyIcon type="primary" />
+      </div>
+      <h3 className={`text text_type_main-default`}>{data.name}</h3>
+    </li>
+  );
+};
+
 const BurgerIngredients: React.FC = () => {
-  const sortedProducts = sortProducts(products as Product[]);
+
+  const [state, setState] = useState<{
+    isLoading: boolean;
+    hasError: boolean;
+    data: Product[];
+  }>({
+    isLoading: false,
+    hasError: false,
+    data: [],
+  });
   const [current, setCurrent] = React.useState("bun");
 
   // Рефы для каждого раздела
@@ -72,21 +97,24 @@ const BurgerIngredients: React.FC = () => {
     setIsModalActive(false);
   };
 
-  //Закрытие модального окна с помощью кнопки Esc
-  {/* 
-  const handleModalKeyClose = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      handleModalClose();
-    }
-  };
-
   useEffect(() => {
-    document.addEventListener("keydown", handleModalKeyClose);
-    return () => {
-      document.removeEventListener("keydown", handleModalKeyClose);
+    const fetchProducts = () => {
+      setState({ isLoading: true, hasError: false, data: [] });
+      fetch("https://norma.nomoreparties.space/api/ingredients")
+        .then((res) => res.json())
+        .then((data) =>
+          setState({
+            isLoading: false,
+            hasError: false,
+            data: sortProducts(data.data),
+          })
+        )
+        .catch(() => setState({ isLoading: false, hasError: true, data: [] }));
     };
+    fetchProducts();
   }, []);
-*/}
+  const { data, isLoading, hasError } = state;
+
   return (
     <>
       <h1
@@ -117,109 +145,66 @@ const BurgerIngredients: React.FC = () => {
           Начинки
         </Tab>
       </div>
-
-      <section className={ingridient.ingridients}>
-        <div className="mt-9 mb-9" ref={bunRef}>
-          <h2
-            className={`text text_type_main-medium ${ingridient.ingridientTitle}`}
-          >
-            Булки
-          </h2>
-          <ul className={ingridient.ingridientsContainer}>
-            {sortedProducts
-              .filter((product) => product.type === "bun")
-              .map((product) => (
-                <li
-                  className={ingridient.ingridientsItem}
-                  key={product._id}
-                  onClick={() => handleProductClick(product)}
-                >
-                  <img
-                    className="ml-2 mr-2"
-                    src={product.image}
-                    alt={product.name}
+      {isLoading && <p>Загрузка... </p>}
+      {hasError && <p>Произошла ошибка</p>}
+      {!isLoading && !hasError && (
+        <section className={ingridient.ingridients}>
+          <div className="mt-9 mb-9" ref={bunRef}>
+            <h2
+              className={`text text_type_main-medium ${ingridient.ingridientTitle}`}
+            >
+              Булки
+            </h2>
+            <ul className={ingridient.ingridientsContainer}>
+              {data
+                .filter((product) => product.type === "bun")
+                .map((product) => (
+                  <ProductItem
+                    key={product._id}
+                    data={product}
+                    onClick={handleProductClick}
                   />
-                  <div className={ingridient.priceBox}>
-                    <p className={`text text_type_main-default`}>
-                      {product.price}
-                    </p>
-                    <CurrencyIcon type="primary" />
-                  </div>
-                  <h3 className={`text text_type_main-default`}>
-                    {product.name}
-                  </h3>
-                </li>
-              ))}
-          </ul>
-        </div>
-        <div ref={sauceRef}>
-          <h2
-            className={`text text_type_main-medium ${ingridient.ingridientTitle}`}
-          >
-            Соусы
-          </h2>
-          <ul className={ingridient.ingridientsContainer}>
-            {sortedProducts
-              .filter((product) => product.type === "sauce")
-              .map((product) => (
-                <li
-                  className={ingridient.ingridientsItem}
-                  key={product._id}
-                  onClick={() => handleProductClick(product)}
-                >
-                  <img
-                    className="ml-2 mr-2"
-                    src={product.image}
-                    alt={product.name}
+                ))}
+            </ul>
+          </div>
+          <div ref={sauceRef}>
+            <h2
+              className={`text text_type_main-medium ${ingridient.ingridientTitle}`}
+            >
+              Соусы
+            </h2>
+            <ul className={ingridient.ingridientsContainer}>
+              {data
+                .filter((product) => product.type === "sauce")
+                .map((product) => (
+                  <ProductItem
+                    key={product._id}
+                    data={product}
+                    onClick={handleProductClick}
                   />
-                  <div className={ingridient.priceBox}>
-                    <p className={`text text_type_main-default`}>
-                      {product.price}
-                    </p>
-                    <CurrencyIcon type="primary" />
-                  </div>
-                  <h3 className={`text text_type_main-default`}>
-                    {product.name}
-                  </h3>
-                </li>
-              ))}
-          </ul>
-        </div>
-        <div ref={mainRef} className="">
-          <h2
-            className={`text text_type_main-medium ${ingridient.ingridientTitle}`}
-          >
-            Начинки
-          </h2>
-          <ul className={ingridient.ingridientsContainer}>
-            {sortedProducts
-              .filter((product) => product.type === "main")
-              .map((product) => (
-                <li
-                  className={ingridient.ingridientsItem}
-                  key={product._id}
-                  onClick={() => handleProductClick(product)}
-                >
-                  <img
-                    className="ml-2 mr-2"
-                    src={product.image}
-                    alt={product.name}
+                ))}
+            </ul>
+          </div>
+          <div ref={mainRef} className="">
+            <h2
+              className={`text text_type_main-medium ${ingridient.ingridientTitle}`}
+            >
+              Начинки
+            </h2>
+            <ul className={ingridient.ingridientsContainer}>
+              {data
+                .filter((product) => product.type === "main")
+                .map((product) => (
+                  <ProductItem
+                    key={product._id}
+                    data={product}
+                    onClick={handleProductClick}
                   />
-                  <div className={ingridient.priceBox}>
-                    <p className={`text text_type_main-default`}>
-                      {product.price}
-                    </p>
-                    <CurrencyIcon type="primary" />
-                  </div>
-                  <h3 className={`text text_type_main-default`}>
-                    {product.name}
-                  </h3>
-                </li>
-              ))}
-          </ul>
-        </div>
-      </section>
-
+                ))}
+            </ul>
+          </div>
+        </section>
+      )}
       {selectedProduct && (
         <ModalWindow active={isModalActive} setActive={setIsModalActive}>
           <div className={modal.active}>

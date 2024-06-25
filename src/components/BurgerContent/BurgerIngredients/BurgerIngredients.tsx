@@ -8,7 +8,6 @@ import {
 import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 
-// Типизация для бля блока "Продукты"
 interface Product {
   _id: string;
   name: string;

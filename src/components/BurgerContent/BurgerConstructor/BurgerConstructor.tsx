@@ -1,129 +1,166 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
+import { useDrop, DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import {
   ConstructorElement,
-  Button,
   DragIcon,
-  CloseIcon,
   CurrencyIcon,
+  Button,
+  CloseIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
 import styles from "./burgerStyles.module.css";
+import { Product } from "../BurgerIngredients/types"; //  тип продукта здесь
+import ModalWindow from "./ModalWindow/ModalWindow";
 import CheckMark from "./SVG/CheckMark";
 
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  image_mobile: string;
-  isLocked: boolean;
+
+
+// Функция генерации идентификатора заказа
+const generateOrderId = (): string => {
+  return Math.floor(1000 + Math.random() * 9000).toString(); // Генерация четырехзначного числа
+};
+interface BurgerConstructorProps {
+  selectedIngredients: Product[];
+  onAddIngredient: (ingredient: Product) => void;
+  onRemoveIngredient: (index: number) => void;
 }
 
-const BurgerConstructor: React.FC = () => {
-  const [modalActive, setIsModalActive] = useState(false);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  //const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(
-          "https://norma.nomoreparties.space/api/ingredients"
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        setProducts(data.data);
-        setIsLoading(false);
-        setHasError(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(false);
-        setHasError(true);
+const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
+  
+  selectedIngredients,
+  onAddIngredient,
+  onRemoveIngredient,
+}) => {
+  const [{ isOver }, drop] = useDrop({
+    accept: "PRODUCT",
+    drop: (item: { data: Product }) => {
+      if (
+        item.data.type === "bun" &&
+        selectedIngredients.some((ingredient) => ingredient.type === "bun")
+      ) {
+        return;
       }
-    };
+      onAddIngredient(item.data);
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
 
-    fetchProducts();
-  }, []);
+  const [isModalActive, setIsModalActive] = useState(false);
+  const [orderId, setOrderId] = useState<string | null>(null);
+
+  const totalPrice = selectedIngredients.reduce(
+    (acc, ingredient) => acc + ingredient.price,
+    0
+  );
+
+  const bun = selectedIngredients.find(
+    (ingredient) => ingredient.type === "bun"
+  );
+  const otherIngredients = selectedIngredients.filter(
+    (ingredient) => ingredient.type !== "bun"
+  );
 
   // Функция для закрытия модального окна
   const handleModalClose = () => {
     setIsModalActive(false);
   };
 
+  // Функция для открытия модального окна и генерации идентификатора заказа
+  const handleOrderClick = () => {
+    const newOrderId = generateOrderId();
+    setOrderId(newOrderId);
 
+    setIsModalActive(true);
+  };
 
+  
   return (
-    <>
-      <section className={styles.contentConstructor}>
-        <div className={styles.listConstructor}>
-          {isLoading && <p>Загрузка...</p>}
-          {hasError && <p>Произошла ошибка</p>}
-          {!isLoading &&
-            !hasError &&
-            products.map((itemBurger, index) => (
-              <div key={itemBurger._id}>
+    
+      <>
+      <DndProvider backend={HTML5Backend}>
+        <section className={styles.contentConstructor} ref={drop}>
+          <h2 className="text text_type_main-medium"></h2>
+          <div className={styles.listConstructor}>
+            {bun && (
+              <div className={styles.constructorElement}>
+                <ConstructorElement
+                  type="top"
+                  isLocked={true}
+                  text={`${bun.name} (верх)`}
+                  price={bun.price}
+                  thumbnail={bun.image}
+                />
+              </div>
+            )}
+            {otherIngredients.map((ingredient: Product, index: number) => (
+              <div key={index} className={styles.constructorElement}>
                 <DragIcon type="primary" />
                 <ConstructorElement
-                  key={index}
-                  text={itemBurger.name}
-                  price={itemBurger.price}
-                  thumbnail={itemBurger.image_mobile}
-                  isLocked={itemBurger.isLocked}
-
+                  text={ingredient.name}
+                  price={ingredient.price}
+                  thumbnail={ingredient.image}
+                  handleClose={() => onRemoveIngredient(index)}
                 />
               </div>
             ))}
-        </div>
-      </section>
-      <section className={`ml-1 mr-1 mb-1 mt-9 ${styles.boxForButton}`}>
-        <div className={styles.footerOrder}>
-          <div>
-            <p className="text text_type_digits-medium">733</p>
+            {bun && (
+              <div className={styles.constructorElement}>
+                <ConstructorElement
+                  type="bottom"
+                  isLocked={true}
+                  text={`${bun.name} (низ)`}
+                  price={bun.price}
+                  thumbnail={bun.image}
+                />
+              </div>
+            )}
           </div>
-          <div>
-            <CurrencyIcon type="primary" />
+        </section>
+        <section className={`ml-1 mr-1 mb-1 mt-9 ${styles.boxForButton}`}>
+          <div className={styles.footerOrder}>
+            <div>
+              <p className="text text_type_digits-medium">{totalPrice}</p>
+            </div>
+            <div>
+              <CurrencyIcon type="primary" />
+            </div>
+            <Button
+              htmlType="button"
+              type="primary"
+              size="large"
+              onClick={handleOrderClick}
+            >
+              Оформить заказ
+            </Button>
           </div>
+        </section>
 
-          <Button
-            htmlType="button"
-            type="primary"
-            size="large"
-            onClick={() => setIsModalActive(true)}
-          >
-            Оформить заказ
-          </Button>
-        </div>
-      </section>
-
-      {/* Модальное окно */}
-      {/*  {selectedProduct && ( */}
-      <ModalWindow active={modalActive} setActive={setIsModalActive}>
-        <div className={styles.boxModalClose}>
-          <div className={`p-2`} style={{ cursor: "pointer" }}>
-            <CloseIcon type="primary" onClick={() => handleModalClose()} />
+        <ModalWindow active={isModalActive} setActive={setIsModalActive}>
+          <div className={styles.boxModalClose}>
+            <div className={`p-2`} style={{ cursor: "pointer" }}>
+              <CloseIcon type="primary" onClick={handleModalClose} />
+            </div>
           </div>
-        </div>
-        <p className="mt-8 text text_type_digits-large">12345</p>
-        <p className="mb-10 text text_type_main-medium">
-          Идентификатор заказа
-        </p>
-        <div>
-          <CheckMark />
-        </div>
-        <p className="mt-10 text text_type_main-small">
-          {" "}
-          Ваш заказ начали готовить
-        </p>
-        <p className=" mt-2 text text_type_main-default text_color_inactive">
-          Дождитесь готовности на орбитальной станции
-        </p>
-      </ModalWindow>
-      {/*   )}*/}
-    </>
+          <p className="mt-8 text text_type_digits-large">{orderId}</p>
+          <p className="mb-10 text text_type_main-medium">
+            Идентификатор заказа
+          </p>
+          <div>
+            <CheckMark />
+          </div>
+          <p className="mt-10 text text_type_main-small">
+            {" "}
+            Ваш заказ начали готовить
+          </p>
+          <p className=" mt-2 text text_type_main-default text_color_inactive">
+            Дождитесь готовности на орбитальной станции
+          </p>
+        </ModalWindow>
+        </DndProvider> 
+      </>
+   
   );
 };
 

@@ -1,63 +1,29 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "./services/store";
+import { fetchProducts } from "./services/productSlice";
 import ingridient from "./ingridient.module.css";
-import modal from "./modal.module.css";
+
 import {
   CurrencyIcon,
   Tab,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
-
-interface Product {
-  _id: string;
-  name: string;
-  type: string;
-  proteins: number;
-  fat: number;
-  carbohydrates: number;
-  calories: number;
-  price: number;
-  image: string;
-  image_large: string;
-}
-
-// Функция сортировки с типизацией
-const sortProducts = (products: Product[]): Product[] => {
-  const order = ["bun", "sauce", "main"];
-  return products
-    .slice()
-    .sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
-};
-
-const ProductItem: React.FC<{
-  data: Product;
-  onClick: (product: Product) => void;
-}> = ({ data, onClick }) => {
-
-  return (
-    <li className={ingridient.ingridientsItem} onClick={() => onClick(data)}>
-      <img className="ml-2 mr-2" src={data.image} alt={data.name} />
-      <div className={ingridient.priceBox}>
-        <p className={`text text_type_main-default`}>{data.price}</p>
-        <CurrencyIcon type="primary" />
-      </div>
-      <h3 className={`text text_type_main-default`}>{data.name}</h3>
-    </li>
-  );
-};
+import { Product } from "./types";
+import ProductItem from "./ProductItem";
+import useFetchProducts from "./useFetchProducts";
+import ProductDetailsModal from "./ProductDetailsModal";
+import BurgerConstructor from "../BurgerConstructor/BurgerConstructor";
 
 const BurgerIngredients: React.FC = () => {
-
-  const [state, setState] = useState<{
-    isLoading: boolean;
-    hasError: boolean;
-    data: Product[];
-  }>({
-    isLoading: false,
-    hasError: false,
-    data: [],
-  });
+  const dispatch = useDispatch<AppDispatch>();
+  const { data, isLoading, hasError } = useFetchProducts();
   const [current, setCurrent] = React.useState("bun");
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   // Рефы для каждого раздела
   const bunRef = useRef<HTMLDivElement>(null);
@@ -95,24 +61,6 @@ const BurgerIngredients: React.FC = () => {
   const handleModalClose = () => {
     setIsModalActive(false);
   };
-
-  useEffect(() => {
-    const fetchProducts = () => {
-      setState({ isLoading: true, hasError: false, data: [] });
-      fetch("https://norma.nomoreparties.space/api/ingredients")
-        .then((res) => res.json())
-        .then((data) =>
-          setState({
-            isLoading: false,
-            hasError: false,
-            data: sortProducts(data.data),
-          })
-        )
-        .catch(() => setState({ isLoading: false, hasError: true, data: [] }));
-    };
-    fetchProducts();
-  }, []);
-  const { data, isLoading, hasError } = state;
 
   return (
     <>
@@ -204,77 +152,11 @@ const BurgerIngredients: React.FC = () => {
           </div>
         </section>
       )}
-      {selectedProduct && (
-        <ModalWindow active={isModalActive} setActive={setIsModalActive}>
-          <div className={modal.active}>
-            <div className={ingridient.ModalHeader}>
-              <h2 className="text text_type_main-large">Детали ингредиента</h2>
-              <div className={`p-2`} style={{ cursor: "pointer" }}>
-                <CloseIcon type="primary" onClick={() => handleModalClose()} />
-              </div>
-            </div>
-            <div>
-              <div>
-                <img
-                  src={selectedProduct.image_large}
-                  alt={selectedProduct.name}
-                />
-                <h3>{selectedProduct.name}</h3>
-              </div>
-              <div className={ingridient.ingridentModal}>
-                <ul
-                  className={`text text_type_main-default ${ingridient.modalContentUl}`}
-                >
-                  <li
-                    className={`text text_type_main-default ${ingridient.modalContentLi}`}
-                  >
-                    Калории, ккал
-                  </li>
-                  <li
-                    className={`text text_type_main-default ${ingridient.modalContentLi}`}
-                  >
-                    {selectedProduct.calories}
-                  </li>
-                </ul>
-                <ul className={ingridient.modalContentUl}>
-                  <li
-                    className={`text text_type_main-default ${ingridient.modalContentLi}`}
-                  >
-                    Белки, г
-                  </li>
-                  <li className={ingridient.modalContentLi}>
-                    {selectedProduct.proteins}
-                  </li>
-                </ul>
-                <ul className={ingridient.modalContentUl}>
-                  <li
-                    className={`text text_type_main-default ${ingridient.modalContentLi}`}
-                  >
-                    Жиры, г{" "}
-                  </li>
-                  <li
-                    className={`text text_type_main-default ${ingridient.modalContentLi}`}
-                  >
-                    {selectedProduct.fat}
-                  </li>
-                </ul>
-                <ul
-                  className={`text text_type_main-default ${ingridient.modalContentUl}`}
-                >
-                  <li
-                    className={`text text_type_main-default ${ingridient.modalContentLi}`}
-                  >
-                    Углеводы, г
-                  </li>
-                  <li className={ingridient.modalContentLi}>
-                    {selectedProduct.carbohydrates}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </ModalWindow>
-      )}
+      <ProductDetailsModal
+        product={selectedProduct}
+        isActive={isModalActive}
+        onClose={handleModalClose}
+      />
     </>
   );
 };

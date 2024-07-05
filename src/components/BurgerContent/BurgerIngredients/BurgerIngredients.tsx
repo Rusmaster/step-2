@@ -8,8 +8,8 @@ import {
   CurrencyIcon,
   Tab,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
-import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
+//import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
+//import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Product } from "./types";
 import ProductItem from "./ProductItem";
 import useFetchProducts from "./useFetchProducts";

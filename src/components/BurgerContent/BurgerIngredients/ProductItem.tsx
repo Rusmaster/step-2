@@ -3,7 +3,7 @@ import { useDrag } from "react-dnd";
 import ingridient from "./ingridient.module.css";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Product } from "./types";
-import { addIngredient } from "../BurgerConstructor/services/actions";
+//import { addIngredient } from "../BurgerConstructor/services/actions";
 
 const ProductItem: React.FC<{
   data: Product;

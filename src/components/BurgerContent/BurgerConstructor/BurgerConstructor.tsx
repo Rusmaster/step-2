@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { useDrop, useDrag, DndProvider } from "react-dnd";
+import React, { useState} from "react";
+import { useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import {
   ConstructorElement,
@@ -13,12 +13,7 @@ import { Product } from "../BurgerIngredients/types"; //  тип продукт�
 import ModalWindow from "./ModalWindow/ModalWindow";
 import CheckMark from "./SVG/CheckMark";
 
-import {
-  addIngredient,
-  removeIngredient,
-  moveIngredient,
-  placeOrder,
-} from "../BurgerIngredients/services/burgerConstructorSlice";
+
 
 // Функция генерации идентификатора заказа
 const generateOrderId = (): string => {
@@ -86,7 +81,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
       <>
       <DndProvider backend={HTML5Backend}>
         <section className={styles.contentConstructor} ref={drop}>
-          <h2 className="text text_type_main-medium">Ваш бургер</h2>
+          <h2 className="text text_type_main-medium"></h2>
           <div className={styles.listConstructor}>
             {bun && (
               <div className={styles.constructorElement}>

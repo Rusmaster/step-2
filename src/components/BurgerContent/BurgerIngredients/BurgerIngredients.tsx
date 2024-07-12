@@ -1,40 +1,64 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "./services/store";
-import { fetchProducts } from "./services/productSlice";
+import { RootState, AppDispatch } from "../../../services/store";
+import { fetchProducts } from "../../../services/actions/productActions"; // Обновить путь импорта
 import ingridient from "./ingridient.module.css";
-
-import {
-  CurrencyIcon,
-  Tab,
-} from "@ya.praktikum/react-developer-burger-ui-components";
-//import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
-//import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
+import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Product } from "./types";
 import ProductItem from "./ProductItem";
 import useFetchProducts from "./useFetchProducts";
 import ProductDetailsModal from "./ProductDetailsModal";
-import BurgerConstructor from "../BurgerConstructor/BurgerConstructor";
+import { useInView } from "react-intersection-observer";
 
-const BurgerIngredients: React.FC = () => {
+// Функция генерации уникального идентификатора
+const generateUniqueId = (): string => {
+  return (
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15)
+  );
+};
+
+
+interface BurgerIngredientsProps {
+  onAddIngredient: (ingredient: Product) => void;
+}
+
+const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
+  onAddIngredient,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const { data, isLoading, hasError } = useFetchProducts();
   const [current, setCurrent] = React.useState("bun");
+
+  const [selectedIngredients, setSelectedIngredients] = useState<
+    (Product & { uniqueId: string })[]
+  >([]);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  // Рефы для каждого раздела
   const bunRef = useRef<HTMLDivElement>(null);
   const sauceRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
 
-  // Состояние для модального окна
+const [bunInViewRef, bunInView] = useInView({ threshold: 0.3 });
+const [sauceInViewRef, sauceInView] = useInView({ threshold: 0.3 });
+const [mainInViewRef, mainInView] = useInView({ threshold: 0.5 });
+
+useEffect(() => {
+  if (bunInView) {
+    setCurrent("bun");
+  } else if (sauceInView) {
+    setCurrent("sauce");
+  } else if (mainInView) {
+    setCurrent("main");
+  }
+}, [bunInView, bunInView, mainInView]);
+
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalActive, setIsModalActive] = useState(false);
 
-  // Функция для прокрутки к выбранному разделу
   const handleTabClick = (value: string) => {
     setCurrent(value);
     switch (value) {
@@ -52,12 +76,11 @@ const BurgerIngredients: React.FC = () => {
     }
   };
 
-  // Функция для открытия модального окна
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
     setIsModalActive(true);
   };
-  // Функция для закрытия модального окна
+
   const handleModalClose = () => {
     setIsModalActive(false);
   };
@@ -97,61 +120,70 @@ const BurgerIngredients: React.FC = () => {
       {!isLoading && !hasError && (
         <section className={ingridient.ingridients}>
           <div className="mt-9 mb-9" ref={bunRef}>
-            <h2
-              className={`text text_type_main-medium ${ingridient.ingridientTitle}`}
-            >
-              Булки
-            </h2>
-            <ul className={ingridient.ingridientsContainer}>
-              {data
-                .filter((product) => product.type === "bun")
-                .map((product) => (
-                  <ProductItem
-                    key={product._id}
-                    data={product}
-                    onClick={handleProductClick}
-                  />
-                ))}
-            </ul>
+            <div ref={bunInViewRef}>
+              <h2
+                className={`text text_type_main-medium ${ingridient.ingridientTitle}`}
+              >
+                Булки
+              </h2>
+              <ul className={ingridient.ingridientsContainer}>
+                {data
+                  .filter((product) => product.type === "bun")
+                  .map((product) => (
+                    <ProductItem
+                      key={product._id}
+                      data={product}
+                      onClick={handleProductClick}
+                    />
+                  ))}
+              </ul>
+            </div>
           </div>
           <div ref={sauceRef}>
-            <h2
-              className={`text text_type_main-medium ${ingridient.ingridientTitle}`}
-            >
-              Соусы
-            </h2>
-            <ul className={ingridient.ingridientsContainer}>
-              {data
-                .filter((product) => product.type === "sauce")
-                .map((product) => (
-                  <ProductItem
-                    key={product._id}
-                    data={product}
-                    onClick={handleProductClick}
-                  />
-                ))}
-            </ul>
+            <div ref={sauceInViewRef}>
+              <h2
+                className={`text text_type_main-medium ${ingridient.ingridientTitle}`}
+              >
+                Соусы
+              </h2>
+              <ul className={ingridient.ingridientsContainer}>
+                {data
+                  .filter((product) => product.type === "sauce")
+                  .map((product) => (
+                    <ProductItem
+                      key={product._id}
+                      data={product}
+                      onClick={handleProductClick}
+                    />
+                  ))}
+              </ul>
+            </div>
           </div>
-          <div ref={mainRef} className="">
-            <h2
-              className={`text text_type_main-medium ${ingridient.ingridientTitle}`}
-            >
-              Начинки
-            </h2>
-            <ul className={ingridient.ingridientsContainer}>
-              {data
-                .filter((product) => product.type === "main")
-                .map((product) => (
-                  <ProductItem
-                    key={product._id}
-                    data={product}
-                    onClick={handleProductClick}
-                  />
-                ))}
-            </ul>
+          <div ref={mainRef}>
+            <div ref={mainInViewRef}>
+              <h2
+                className={`text text_type_main-medium mt-15 ${ingridient.ingridientTitle}`}
+              >
+                Начинки
+              </h2>
+              <ul
+                className={ingridient.ingridientsContainer}               
+              >
+                {data
+                  .filter((product) => product.type === "main")
+                  .map((product) => (
+                    <ProductItem
+                      key={product._id}
+                      data={product}
+                      onClick={handleProductClick}
+                    />
+                  ))}
+              </ul>
+            </div>
           </div>
         </section>
       )}
+
       <ProductDetailsModal
         product={selectedProduct}
         isActive={isModalActive}

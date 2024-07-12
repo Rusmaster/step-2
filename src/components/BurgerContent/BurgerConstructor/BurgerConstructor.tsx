@@ -1,46 +1,51 @@
-import React, { useState} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDrop, DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import {
   ConstructorElement,
-  DragIcon,
   CurrencyIcon,
   Button,
   CloseIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burgerStyles.module.css";
-import { Product } from "../BurgerIngredients/types"; //  тип продукта здесь
-import ModalWindow from "./ModalWindow/ModalWindow";
+import { Product } from "../BurgerIngredients/types";
+//import ModalWindow from "./ModalWindow/ModalWindow";
+import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
 import CheckMark from "./SVG/CheckMark";
+import DraggableIngredient from "./DraggableIngredient";
+import { v4 as uuidv4 } from "uuid";
+import OrderDetails from "./OrderDeatails";
 
 
 
-// Функция генерации идентификатора заказа
 const generateOrderId = (): string => {
-  return Math.floor(1000 + Math.random() * 9000).toString(); // Генерация четырехзначного числа
+  return Math.floor(1000 + Math.random() * 9000).toString();
 };
+
 interface BurgerConstructorProps {
-  selectedIngredients: Product[];
+  selectedIngredients: (Product & { uniqueId: string })[];
   onAddIngredient: (ingredient: Product) => void;
-  onRemoveIngredient: (index: number) => void;
+  onRemoveIngredient: (uniqueId: string) => void;
+  moveIngredient: (dragIndex: number, hoverIndex: number) => void;
 }
 
 const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
-  
   selectedIngredients,
   onAddIngredient,
   onRemoveIngredient,
+  moveIngredient,
 }) => {
   const [{ isOver }, drop] = useDrop({
     accept: "PRODUCT",
     drop: (item: { data: Product }) => {
-      if (
-        item.data.type === "bun" &&
-        selectedIngredients.some((ingredient) => ingredient.type === "bun")
-      ) {
-        return;
-      }
-      onAddIngredient(item.data);
+      // Поверка на наличие булки
+       const bunExists = selectedIngredients.some(
+         (ingredient) => ingredient.type === "bun"
+       );
+       if (item.data.type === "bun" && bunExists) return;
+
+      const ingredientWithId = { ...item.data, uniqueId: uuidv4() };
+      onAddIngredient(ingredientWithId);
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
@@ -49,11 +54,21 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
 
   const [isModalActive, setIsModalActive] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [isOrderButtonDisabled, setIsOrderButtonDisabled] = useState(true);
 
-  const totalPrice = selectedIngredients.reduce(
-    (acc, ingredient) => acc + ingredient.price,
-    0
-  );
+  useEffect(() => {
+    const bunExists = selectedIngredients.some(
+      (ingredient) => ingredient.type === "bun"
+    );
+    setIsOrderButtonDisabled(!bunExists);
+  }, [selectedIngredients]);
+
+  const totalPrice = selectedIngredients.reduce((acc, ingredient) => {
+    if (ingredient.type === "bun"){
+      return acc + (ingredient.price ?? 0) * 2;
+    }
+    return acc + (ingredient.price ?? 0);
+  }, 0);
 
   const bun = selectedIngredients.find(
     (ingredient) => ingredient.type === "bun"
@@ -62,59 +77,55 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
     (ingredient) => ingredient.type !== "bun"
   );
 
-  // Функция для закрытия модального окна
   const handleModalClose = () => {
     setIsModalActive(false);
   };
 
-  // Функция для открытия модального окна и генерации идентификатора заказа
   const handleOrderClick = () => {
     const newOrderId = generateOrderId();
     setOrderId(newOrderId);
-
     setIsModalActive(true);
   };
 
-  
+  const moveIngredientCallback = useCallback(
+    (dragIndex: number, hoverIndex: number) => {
+      moveIngredient(dragIndex, hoverIndex);
+    },
+    [moveIngredient]
+  );
+
   return (
-    
-      <>
+    <>
       <DndProvider backend={HTML5Backend}>
         <section className={styles.contentConstructor} ref={drop}>
           <h2 className="text text_type_main-medium"></h2>
           <div className={styles.listConstructor}>
             {bun && (
-              <div className={styles.constructorElement}>
-                <ConstructorElement
-                  type="top"
-                  isLocked={true}
-                  text={`${bun.name} (верх)`}
-                  price={bun.price}
-                  thumbnail={bun.image}
-                />
-              </div>
+              <ConstructorElement
+                type="top"
+                isLocked={true}
+                text={`${bun.name} (верх)`}
+                price={bun.price}
+                thumbnail={bun.image}
+              />
             )}
-            {otherIngredients.map((ingredient: Product, index: number) => (
-              <div key={index} className={styles.constructorElement}>
-                <DragIcon type="primary" />
-                <ConstructorElement
-                  text={ingredient.name}
-                  price={ingredient.price}
-                  thumbnail={ingredient.image}
-                  handleClose={() => onRemoveIngredient(index)}
-                />
-              </div>
+            {otherIngredients.map((ingredient, index) => (
+              <DraggableIngredient
+                key={ingredient.uniqueId}
+                index={index + 1}
+                ingredient={ingredient}
+                moveIngredient={moveIngredientCallback}
+                onRemoveIngredient={onRemoveIngredient}
+              />
             ))}
             {bun && (
-              <div className={styles.constructorElement}>
-                <ConstructorElement
-                  type="bottom"
-                  isLocked={true}
-                  text={`${bun.name} (низ)`}
-                  price={bun.price}
-                  thumbnail={bun.image}
-                />
-              </div>
+              <ConstructorElement
+                type="bottom"
+                isLocked={true}
+                text={`${bun.name} (низ)`}
+                price={bun.price}
+                thumbnail={bun.image}
+              />
             )}
           </div>
         </section>
@@ -131,6 +142,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
               type="primary"
               size="large"
               onClick={handleOrderClick}
+              disabled={isOrderButtonDisabled}
             >
               Оформить заказ
             </Button>
@@ -138,29 +150,12 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
         </section>
 
         <ModalWindow active={isModalActive} setActive={setIsModalActive}>
-          <div className={styles.boxModalClose}>
-            <div className={`p-2`} style={{ cursor: "pointer" }}>
-              <CloseIcon type="primary" onClick={handleModalClose} />
-            </div>
-          </div>
-          <p className="mt-8 text text_type_digits-large">{orderId}</p>
-          <p className="mb-10 text text_type_main-medium">
-            Идентификатор заказа
-          </p>
-          <div>
-            <CheckMark />
-          </div>
-          <p className="mt-10 text text_type_main-small">
-            {" "}
-            Ваш заказ начали готовить
-          </p>
-          <p className=" mt-2 text text_type_main-default text_color_inactive">
-            Дождитесь готовности на орбитальной станции
-          </p>
+          <OrderDetails orderId={orderId} totalPrice={totalPrice}>
+        
+          </OrderDetails>
         </ModalWindow>
-        </DndProvider> 
-      </>
-   
+      </DndProvider>
+    </>
   );
 };
 

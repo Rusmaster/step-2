@@ -21,20 +21,20 @@
 .modal__content {
   padding: 40px 40px 60px 40px;
   border-radius: 12px;
-  background-color: #1C1C21;
+  background-color: #1c1c21;
   width: 720px;
-  color:#ffffff;
+  color: #ffffff;
   text-align: center;
 }
-.ModalHeader{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.ModalHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 .pointer {
   cursor: pointer;
 }
-.boxModalClose{
+.boxModalClose {
   display: flex;
   flex-direction: row-reverse;
 }

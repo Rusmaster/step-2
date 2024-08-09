@@ -14,7 +14,7 @@ export const fetchProducts = createAsyncThunk<Product[]>(
       const data = await response.json();
       return data.data;
     } catch (error: any) {
-      return rejectWithValue(`Ошибка ${error.message}`);
+      return rejectWithValue(`Ошибка сервера ${error.message}`);
     }
   }
 

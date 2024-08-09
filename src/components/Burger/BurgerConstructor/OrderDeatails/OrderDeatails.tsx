@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CheckMark from "./SVG/CheckMark";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import style from "./styles.module.css";
@@ -13,6 +13,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
   totalPrice,
   children,
 }) => {
+  useEffect(() => {
+    console.log("Order ID in OrderDetails:", orderId);
+  }, [orderId]);
   return (
     <>
       <p className="mt-8 text text_type_digits-large">{orderId}</p>

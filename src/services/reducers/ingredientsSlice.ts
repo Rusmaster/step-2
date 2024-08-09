@@ -1,16 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { Product } from "./../../types/Product";
 import { BASE_URL } from "../constants";
+//import { fetchProducts } from "../actions/productActions";
 
 export interface IngredientsState {
   isLoading: boolean;
   hasError: boolean;
+  errorMessage: string | null;
   data: Product[];
 }
 
 const initialState: IngredientsState = {
   isLoading: false,
   hasError: false,
+  errorMessage: null,
   data: [],
 };
 
@@ -29,18 +32,25 @@ const ingredientsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+  
       .addCase(fetchIngredients.pending, (state) => {
         state.isLoading = true;
         state.hasError = false;
+        state.errorMessage = null;
       })
+     
       .addCase(fetchIngredients.fulfilled, (state, action) => {
         state.isLoading = false;
         state.data = action.payload;
       })
-      .addCase(fetchIngredients.rejected, (state) => {
+
+      
+      .addCase(fetchIngredients.rejected, (state, action) => {
         state.isLoading = false;
         state.hasError = true;
+        state.errorMessage = action.payload as string;
       });
+      
   },
 });
 

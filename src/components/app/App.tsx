@@ -17,7 +17,7 @@ function App() {
     if (!acc[ingredient._id]) {
       acc[ingredient._id] = 0;
     }
-    acc[ingredient._id]++;
+    acc[ingredient._id]++; 
     return acc;
   }, {} as { [key: string]: number });
 

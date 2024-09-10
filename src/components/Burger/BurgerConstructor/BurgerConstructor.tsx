@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 //import { v4 as uuidv4 } from "uuid";
 import { useDrop } from "react-dnd";
 import { Product } from "../../../types/Product";
@@ -12,8 +11,6 @@ import {
 import TotalPrice from "./TotalPrice";
 import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
 import OrderDetails from "./OrderDeatails";
-import { submitOrder } from "../../../services/actions/orderActions";
-import { RootState, AppDispatch } from "../../../services/store";
 
 const ItemType = "ingredient";
 
@@ -31,10 +28,6 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
   setBun,
 }) => {
   const [totalPrice, setTotalPrice] = useState(0);
-   const dispatch: AppDispatch = useDispatch();
-  const orderId = useSelector((state: RootState) => state.order.orderId);
-  const orderLoading = useSelector((state: RootState) => state.order.loading);
-  const orderError = useSelector((state: RootState) => state.order.error);
 
   const [{ isOver }, dropRef] = useDrop({
     accept: ItemType,
@@ -97,24 +90,13 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
 
   //Модальное окно
   const [isModalActive, setIsModalActive] = useState(false);
-  const handleOrderClick = () => {
-    if (bun && ingredients.length > 0) {
-      const ingredientIds = [
-        bun._id,
-        ...ingredients.map((ingredient) => ingredient._id),
-        bun._id,
-      ];
-      dispatch(submitOrder({ ingredients: ingredientIds }));
-      console.log("Order submitted: ", ingredientIds);
-    }
-  };
+  const [orderId, setOrderId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (orderId) {
-      setIsModalActive(true);
-      console.log("Order ID received: ", orderId);
-    }
-  }, [orderId]);
+  const handleOrderClick = () => {
+    const newOrderId = generateOrderId();
+    setOrderId(newOrderId);
+    setIsModalActive(true);
+  };
 
   return (
     <section className={styles.constructorBox}>
@@ -134,8 +116,8 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
               type="top"
               isLocked={true}
               text="Добавьте булку"
-              price={0}
-              thumbnail="primary"
+             price={0}
+           thumbnail="primary"
             />
           )}
           <div className={styles.middleSection}>
@@ -150,12 +132,18 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
                 />
               ))
             ) : (
+              <div>
+              {/*
               <ConstructorElement
                 text="Добавьте ингредиент"
                 price={0}
                 thumbnail=""
                 isLocked={true}
               />
+              */}
+              
+                добавить ингредиент
+              </div>
             )}
           </div>
           {bun ? (
@@ -193,11 +181,10 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
               size="large"
               extraClass="ml-2"
               onClick={handleOrderClick}
-              disabled={!bun || ingredients.length === 0 || orderLoading} // Условие для отключения кнопки
+              disabled={!bun || ingredients.length === 0} // Условие для отключения кнопки
             >
               Оформить заказ
             </Button>
-            {orderError && <p className={styles.error}>Ошибка: {orderError}</p>}
           </div>
         </div>
       </div>

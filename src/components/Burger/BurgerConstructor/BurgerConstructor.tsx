@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-//import { v4 as uuidv4 } from "uuid";
 import { useDrop } from "react-dnd";
-import { Product } from "../../../types/Product";
 import styles from "./styles.module.css";
 import DraggableIngredient from "./DraggableIngredient";
 import {
@@ -11,6 +9,16 @@ import {
 import TotalPrice from "./TotalPrice";
 import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
 import OrderDetails from "./OrderDeatails";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  sendOrderThunk,
+  clearOrder,
+  selectOrderStatus,
+  selectOrderId,
+} from "../../../services/order/orderSlice";
+import { RootState, AppDispatch } from "../../../services/store"; // Импортируем AppDispatch для типизации dispatch
+
+import { Product } from "../../../types/Product";
 
 const ItemType = "ingredient";
 
@@ -19,6 +27,7 @@ interface BurgerConstructorProps {
   setIngredients: React.Dispatch<React.SetStateAction<Product[]>>;
   bun: Product | null;
   setBun: React.Dispatch<React.SetStateAction<Product | null>>;
+  totalPrice: number;
 }
 
 const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
@@ -28,9 +37,8 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
   setBun,
 }) => {
   const [totalPrice, setTotalPrice] = useState(0);
-
   const [{ isOver }, dropRef] = useDrop({
-    accept: ItemType,
+    accept: "ingredient",
     drop: (item: { data: Product }) => {
       if (item && item.data) {
         addIngredientToConstructor(item.data);
@@ -41,11 +49,36 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
     }),
   });
 
+  const dispatch: AppDispatch = useDispatch();
+  const orderStatus = useSelector(selectOrderStatus); // Получаем статус заказа
+  const orderId = useSelector(selectOrderId); // Получаем ID заказа
+
   const addIngredientToConstructor = (ingredient: Product) => {
     if (ingredient.type === "bun") {
       setBun(ingredient);
     } else {
       setIngredients((prevIngredients) => [...prevIngredients, ingredient]);
+    }
+  };
+
+  useEffect(() => {
+    let total = ingredients.reduce(
+      (sum, ingredient) => sum + ingredient.price,
+      0
+    );
+    if (bun) {
+      total += bun.price * 2;
+    }
+    setTotalPrice(total);
+  }, [ingredients, bun]);
+
+  const [isModalActive, setIsModalActive] = useState(false);
+
+  const handleOrderClick = () => {
+    if (bun && ingredients.length > 0) {
+      const allIngredients = [bun, ...ingredients];
+      dispatch(sendOrderThunk(allIngredients)); // Отправляем заказ
+      setIsModalActive(true); // Открываем модальное окно после клика
     }
   };
 
@@ -56,7 +89,6 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
       dragIndex === hoverIndex
     )
       return;
-
     const draggedIngredient = ingredients[dragIndex];
     if (!draggedIngredient) return;
 
@@ -70,32 +102,6 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
     setIngredients((prevIngredients) =>
       prevIngredients.filter((_, i) => i !== index)
     );
-  };
-
-  useEffect(() => {
-    let total = ingredients.reduce(
-      (sum, ingredient) => sum + ingredient.price,
-      0
-    );
-    if (bun) {
-      total += bun.price * 2; // Учитываем верхнюю и нижнюю булку
-    }
-    setTotalPrice(total);
-  }, [ingredients, bun]);
-
-  //Генератор id заказа
-  const generateOrderId = (): string => {
-    return Math.floor(1000 + Math.random() * 9000).toString();
-  };
-
-  //Модальное окно
-  const [isModalActive, setIsModalActive] = useState(false);
-  const [orderId, setOrderId] = useState<string | null>(null);
-
-  const handleOrderClick = () => {
-    const newOrderId = generateOrderId();
-    setOrderId(newOrderId);
-    setIsModalActive(true);
   };
 
   return (
@@ -116,10 +122,11 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
               type="top"
               isLocked={true}
               text="Добавьте булку"
-             price={0}
-           thumbnail="primary"
+              price={0}
+              thumbnail=""
             />
           )}
+
           <div className={styles.middleSection}>
             {ingredients.length > 0 ? (
               ingredients.map((ingredient, index) => (
@@ -128,24 +135,14 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
                   ingredient={ingredient}
                   index={index}
                   moveIngredient={moveIngredient}
-                  removeIngredient={removeIngredient}
+                  removeIngredient={() => removeIngredient(index)}
                 />
               ))
             ) : (
-              <div>
-              {/*
-              <ConstructorElement
-                text="Добавьте ингредиент"
-                price={0}
-                thumbnail=""
-                isLocked={true}
-              />
-              */}
-              
-                добавить ингредиент
-              </div>
+              <div>добавить ингредиент</div>
             )}
           </div>
+
           {bun ? (
             <ConstructorElement
               type="bottom"
@@ -164,14 +161,18 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
             />
           )}
         </div>
-        {/* {isOver && <div className={styles.overlay}>Перенести </div>}*/}
 
+        {/* Модальное окно с деталями заказа */}
         <ModalWindow active={isModalActive} setActive={setIsModalActive}>
-          <OrderDetails
-            orderId={orderId}
-            totalPrice={totalPrice}
-          ></OrderDetails>
+          {orderStatus === "succeeded" ? (
+         <OrderDetails orderId={orderId} totalPrice={totalPrice} />
+           
+          ) : (
+             <p>Идет оформление заказа...</p>
+            
+          )}
         </ModalWindow>
+
         <div className={`ml-1 mr-1 mb-1 mt-9 ${styles.boxForButton}`}>
           <div className={styles.footerOrder}>
             <TotalPrice total={totalPrice} />
@@ -181,7 +182,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
               size="large"
               extraClass="ml-2"
               onClick={handleOrderClick}
-              disabled={!bun || ingredients.length === 0} // Условие для отключения кнопки
+              disabled={!bun || ingredients.length === 0}
             >
               Оформить заказ
             </Button>

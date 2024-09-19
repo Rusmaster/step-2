@@ -105,6 +105,7 @@ const orderIdFromStore = useSelector(selectOrderId);
       const ingredientIds = ingredients.map((ingredient) => ingredient._id); // Получаем ID ингредиентов
       const newOrderId = generateOrderId(); // Генерируем новый ID заказа
       dispatch(sendOrderThunk([bun._id, ...ingredientIds])); // Отправляем заказ с булкой и ингредиентами
+      setOrderId(newOrderId); // Сохраняем сгенерированный ID заказа
       setIsModalActive(true);
     }
   };
@@ -178,7 +179,7 @@ const orderIdFromStore = useSelector(selectOrderId);
 
         <ModalWindow active={isModalActive} setActive={setIsModalActive}>
           <OrderDetails
-            orderId={orderIdFromStore}
+            orderId={orderId || orderIdFromStore} // Cгенерированный ID или ID из Redux
             totalPrice={totalPrice}
             orderStatus={orderStatus}
           ></OrderDetails>

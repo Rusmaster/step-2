@@ -1,5 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { BASE_URL } from "../constants";
+import checkResponse from "../../utils/checkResponse";
+
+
 
 export const fetchIngredients = createAsyncThunk(
   "ingredients/fetchIngredients",
@@ -7,16 +10,14 @@ export const fetchIngredients = createAsyncThunk(
     try {
       const response = await fetch(`${BASE_URL}/ingredients`);
 
-      if (!response.ok) {
-        throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
-      }
+      // Используйте checkResponse для проверки ответа
+      const data = await checkResponse(response);
 
-      const data = await response.json();
       return data.data;
     } catch (err) {
-      // Check if the error is an instance of Error
+      // Проверяем, является ли ошибка экземпляром Error
       if (err instanceof Error) {
-        return rejectWithValue(err.message); // Safely accessing error message
+        return rejectWithValue(err.message); // Безопасный доступ к сообщению об ошибке
       } else {
         return rejectWithValue("Произошла неизвестная ошибка");
       }

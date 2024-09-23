@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Ingredient } from "./api";
 import { RootState } from "../store";
-
+import { BASE_URL } from "../constants";
+import checkResponse from "../../utils/checkResponse";
 // Define types for the response data from the API
 interface OrderResponse {
   orderId: string;
@@ -20,33 +20,24 @@ const initialState: OrderState = {
   error: null,
 };
 
-// Async thunk for sending the order
 export const sendOrderThunk = createAsyncThunk(
   "order/sendOrder",
   async (ingredientIds: string[], { rejectWithValue }) => {
     try {
-      const response = await fetch(
-        "https://norma.nomoreparties.space/api/orders",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ingredients: ingredientIds }), // Send only IDs
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ingredients: ingredientIds }), // Send only IDs
+      });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.log("Ошибка от сервера:", errorData); // Логирование ошибки
-        return rejectWithValue(
-          errorData.message || "Ошибка при отправке заказа"
-        );
-      }
+      // Проверки ответа сервера
+      const data: OrderResponse = await checkResponse(response);
 
-      const data: OrderResponse = await response.json();
       console.log("Ответ от сервера:", data); // Логирование ответа
-      // Additional validation of response data
+
+      // Дополнительная проверка ответа
       if (!data || typeof data.orderId !== "string") {
         return rejectWithValue("Неверный формат ответа от сервера");
       }

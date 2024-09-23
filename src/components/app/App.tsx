@@ -29,9 +29,12 @@ const totalPrice =
   if (bun) {
     ingredientCount[bun._id] = 2; // Верхняя и нижняя булка
   }
+  
   return (
     <Provider store={store}>
       <div className="App">
+
+        
         <AppHeader />
         <DndContext>
           <main className={styles.burgerContent}>

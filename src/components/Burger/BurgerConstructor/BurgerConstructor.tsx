@@ -22,6 +22,7 @@ interface BurgerConstructorProps {
   setIngredients: React.Dispatch<React.SetStateAction<Product[]>>;
   bun: Product | null;
   setBun: React.Dispatch<React.SetStateAction<Product | null>>;
+  totalPrice: number; // Add this line
 }
 
 const BurgerConstructor: React.FC<BurgerConstructorProps> = ({

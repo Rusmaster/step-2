@@ -1,6 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { Product } from "../../types/Product";
 import { fetchIngredients } from "./ingredientsActions";
+
 
 export interface IngredientsState {
   isLoading: boolean;
@@ -9,10 +10,13 @@ export interface IngredientsState {
 }
 
 const initialState: IngredientsState = {
+ 
   isLoading: false,
   hasError: false,
   data: [],
+
 };
+
 
 const ingredientsSlice = createSlice({
   name: "ingredients",

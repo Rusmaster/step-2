@@ -24,7 +24,7 @@ export const sendOrderThunk = createAsyncThunk(
   "order/sendOrder",
   async (ingredientIds: string[], { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/api/order`, {
+      const response = await fetch(`${BASE_URL}/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,22 +32,20 @@ export const sendOrderThunk = createAsyncThunk(
         body: JSON.stringify({ ingredients: ingredientIds }), // Send only IDs
       });
 
-      // Проверки ответа сервера
-      const data: OrderResponse = await checkResponse(response);
+      const data = await response.json();
+      console.log("Ответ от сервера:", data);
 
-      console.log("Ответ от сервера:", data); // Логирование ответа
-
-      // Дополнительная проверка ответа
-      if (!data || typeof data.orderId !== "string") {
-        return rejectWithValue("Неверный формат ответа от сервера");
+      // Проверка успешного ответа
+      if (!data.success) {
+        return rejectWithValue("Ошибка при оформлении заказа");
       }
 
-      return data.orderId;
+      // Возвращаем номер заказа
+      return data.order.number;
     } catch (error: unknown) {
       if (error instanceof Error) {
         return rejectWithValue(error.message);
       } else {
-        console.log("Ошибка запроса:", error); // Логирование ошибки запроса
         return rejectWithValue("Произошла неизвестная ошибка");
       }
     }

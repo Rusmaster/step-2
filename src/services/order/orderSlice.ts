@@ -2,12 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { BASE_URL } from "../constants";
 import checkResponse from "../../utils/checkResponse";
-// Define types for the response data from the API
+
 interface OrderResponse {
   orderId: string;
 }
 
-// Order state type definition
+// Типи состояния
 interface OrderState {
   orderId: string | null;
   orderStatus: "idle" | "loading" | "succeeded" | "failed";
@@ -29,10 +29,11 @@ export const sendOrderThunk = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ingredients: ingredientIds }), // Send only IDs
+        body: JSON.stringify({ ingredients: ingredientIds }), // Отправляем только IDs
       });
 
-      const data = await response.json();
+      //const data = await response.json();
+      const data = await checkResponse(response);
       console.log("Ответ от сервера:", data);
 
       // Проверка успешного ответа
@@ -52,7 +53,6 @@ export const sendOrderThunk = createAsyncThunk(
   }
 );
 
-// Slice definition
 const orderSlice = createSlice({
   name: "order",
   initialState,

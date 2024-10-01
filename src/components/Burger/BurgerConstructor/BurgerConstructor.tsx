@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useAppSelector, useAppDispatch } from "../../../services/hooks";
+import {  useSelector } from "react-redux";
+import {  useAppDispatch } from "../../../services/hooks";
 import { v4 as uuidv4 } from "uuid";
 import { useDrop } from "react-dnd";
 import { Product } from "../../../types/Product";
@@ -11,7 +11,7 @@ import {
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import TotalPrice from "./TotalPrice";
-import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
+import Modal from "../../../ui/ModalWindow/ModalWindow";
 import OrderDetails from "./OrderDeatails";
 import {
   sendOrderThunk,
@@ -35,6 +35,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
   bun,
   setBun,
 }) => {
+  
   const dispatch = useAppDispatch();
   const orderStatus = useSelector(selectOrderStatus);
   const orderIdFromStore = useSelector(selectOrderId);
@@ -81,6 +82,23 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
     newIngredients.splice(hoverIndex, 0, draggedIngredient);
     setIngredients(newIngredients);
   };
+
+    // const moveIngredient = (dragIndex: number, hoverIndex: number) => {
+    //   if (
+    //     dragIndex === undefined ||
+    //     hoverIndex === undefined ||
+    //     dragIndex === hoverIndex
+    //   )
+    //     return;
+
+    //   const draggedIngredient = ingredients[dragIndex];
+    //   if (!draggedIngredient) return;
+
+    //   const newIngredients = [...ingredients];
+    //   newIngredients.splice(dragIndex, 1);
+    //   newIngredients.splice(hoverIndex, 0, draggedIngredient);
+    //   setIngredients(newIngredients);
+    // };
 
   const removeIngredient = (index: number) => {
     setIngredients((prevIngredients) =>
@@ -169,13 +187,13 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
             />
           )}
         </div>
-        <ModalWindow active={isModalActive} setActive={setIsModalActive}>
+        <Modal active={isModalActive} setActive={setIsModalActive}>
           <OrderDetails
             orderId={orderId || orderIdFromStore}
             totalPrice={totalPrice}
             orderStatus={orderStatus}
           ></OrderDetails>
-        </ModalWindow>
+        </Modal>
         <div className={`ml-1 mr-1 mb-1 mt-9 ${styles.boxForButton}`}>
           <div className={styles.footerOrder}>
             <TotalPrice total={totalPrice} />

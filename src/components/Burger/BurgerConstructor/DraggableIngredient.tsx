@@ -16,6 +16,7 @@ const DraggableIngredient: React.FC<{
   moveIngredient: (dragIndex: number, hoverIndex: number) => void;
   removeIngredient: (index: number) => void;
 }> = ({ ingredient, index, moveIngredient, removeIngredient }) => {
+
   const [{ isDragging }, dragRef] = useDrag({
     type: ItemType,
     item: { index },
@@ -26,10 +27,13 @@ const DraggableIngredient: React.FC<{
 
   const [, dropRef] = useDrop({
     accept: ItemType,
-    hover: (item: { index: number }) => {
+    hover: (item: { index: number }, monitor) => {
+      if (!monitor.isOver()) {
+        return;
+      }
       if (item.index !== index) {
         moveIngredient(item.index, index);
-        item.index = index;
+        item.index = index; // Обновляем индекс элемента после перемещения
       }
     },
   });

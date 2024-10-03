@@ -43,9 +43,15 @@
 
 .ingredientItem {
   display: flex;
-  width: 100%;
+  width: 99%;
   align-items: center;
   margin: 5px 0;
+   transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.ingredientItem.dragging {
+  opacity: 0.5;
+  transform: scale(1.00);
 }
 
 .img {

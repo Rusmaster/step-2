@@ -12,12 +12,16 @@ function App() {
   const [ingredients, setIngredients] = useState<Product[]>([]);
   const [bun, setBun] = useState<Product | null>(null);
 
+const totalPrice =
+  ingredients.reduce((acc, ingredient) => acc + ingredient.price, 0) +
+  (bun ? bun.price * 2 : 0);
+
   // Создаем объект для хранения количества каждого ингредиента
   const ingredientCount = ingredients.reduce((acc, ingredient) => {
     if (!acc[ingredient._id]) {
       acc[ingredient._id] = 0;
     }
-    acc[ingredient._id]++;
+    acc[ingredient._id]++; 
     return acc;
   }, {} as { [key: string]: number });
 
@@ -25,9 +29,12 @@ function App() {
   if (bun) {
     ingredientCount[bun._id] = 2; // Верхняя и нижняя булка
   }
+  
   return (
     <Provider store={store}>
       <div className="App">
+
+        
         <AppHeader />
         <DndContext>
           <main className={styles.burgerContent}>
@@ -37,6 +44,7 @@ function App() {
               setIngredients={setIngredients}
               bun={bun}
               setBun={setBun}
+              totalPrice={totalPrice} // передаем totalPrice
             />
           </main>
         </DndContext>

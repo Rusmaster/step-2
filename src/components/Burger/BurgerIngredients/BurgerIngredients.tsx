@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
-
 import { useAppSelector, useAppDispatch } from "../../../services/hooks";
-import { fetchIngredients } from "../../../services/reducers/ingredientsSlice";
+//import { fetchIngredients } from "../../../services/reducers/ingredientsSlice";
+import { fetchIngredients } from "../../../services/ingredients/ingredientsActions";
 import { Product } from "../../../types/Product";
 import styles from "./styles.module.css";
 import {
@@ -19,6 +19,7 @@ interface IngredientProps {
 }
 
 const Ingredient: React.FC<IngredientProps> = ({ data, count, onClick }) => {
+
   const [{ isDragging }, dragRef] = useDrag(() => ({
     type: "ingredient",
     item: { data },

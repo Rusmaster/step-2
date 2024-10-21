@@ -1,11 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import ingredientsReducer from "./ingredients/ingredientsSlice";
 import orderReducer from "./order/orderSlice";
+import userReducer  from "./userslice/userSlice";
+
 
 const store = configureStore({
   reducer: {
     ingredients: ingredientsReducer,
     order: orderReducer,
+    user: userReducer,
   },
 });
 

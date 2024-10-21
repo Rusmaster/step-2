@@ -1,0 +1,38 @@
+
+
+
+.RegistrationBlock{
+    margin-left: auto;
+    margin-right: auto;
+    width: 572px;
+    display: block;
+}
+.title{
+    
+    text-align: center;
+}
+.InputOne{
+   margin-top: 25px;
+   margin-bottom: 20px; 
+   display: flex;
+    justify-content: center;
+}
+
+.InputTwo {
+    margin-top:12px;
+    margin-bottom:12px;
+    display: flex;
+    justify-content: center;
+}
+.buttom {
+    margin-top:30px;
+    margin-bottom: 80px;
+    display: flex;
+    justify-content: center;   
+}
+.link {
+    color: #5940ec;
+}
+.footerLinks{
+    text-align: center;
+}

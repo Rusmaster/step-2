@@ -38,14 +38,10 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
   setBun,
 }) => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate(); // Для навигации на страницу логина
-
-  // Получаем статус авторизации пользователя из Redux
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.user.isAuthenticated
-  );
   const orderStatus = useSelector(selectOrderStatus);
+  const navigate = useNavigate(); // Для навигации на страницу логина
   const orderIdFromStore = useSelector(selectOrderId);
+  const { isAuthenticated } = useSelector((state: RootState) => state.user); // Проверка авторизации
 
   const [totalPrice, setTotalPrice] = useState(0);
 
@@ -60,6 +56,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
       isOver: monitor.isOver(),
     }),
   });
+
 
   // Загрузка данных из localStorage при загрузке компонента
   useEffect(() => {
@@ -83,6 +80,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
       localStorage.setItem("ingredients", JSON.stringify(ingredients));
     }
   }, [ingredients, bun]);
+
 
   const addIngredientToConstructor = (ingredient: Product) => {
     const ingredientWithId = { ...ingredient, uuid: uuidv4() };
@@ -133,18 +131,24 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
   const [isModalActive, setIsModalActive] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
 
- const handleOrderClick = () => {
-   if (!isAuthenticated) {
-     navigate("/login");
-     return;
-   }
+   const handleOrderClick = async () => {
+     if (!bun || ingredients.length === 0) return;
 
-   if (bun && ingredients.length > 0) {
+     // Проверка авторизации перед отправкой заказа
+     if (!isAuthenticated) {
+       navigate("/login");
+       return;
+     }
+
      const ingredientIds = ingredients.map((ingredient) => ingredient._id);
      setIsModalActive(true);
-     dispatch(sendOrderThunk([bun._id, ...ingredientIds]));
-   }
- };
+
+     try {
+       await dispatch(sendOrderThunk([bun._id, ...ingredientIds]));
+     } catch (error) {
+       console.error("Ошибка при отправке заказа:", error);
+     }
+   };
 
   return (
     <section className={styles.constructorBox}>

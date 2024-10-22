@@ -7,12 +7,7 @@ import BurgerConstructor from "../Burger/BurgerConstructor/BurgerConstructor";
 import { Product } from "./../../types/Product";
 import styles from "./styles.module.css";
 import AppHeader from "../AppHeader";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Outlet,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import Login from "../pages/Login/Login";
 import HomePage from "../pages/HomePage/HomePage";
 import Register from "../pages/Register";
@@ -21,36 +16,28 @@ import ResetPassword from "../pages/ResetPassword";
 import Profile from "../pages/Profile";
 import ForgotPasswordTwo from "../pages/ForgotPasswordTwo";
 import OrdersProfile from "../pages/Profile/OrdersProfile/OrdersProfile";
-import IngredientPage from "../pages/IngredientPage/IngredientPage";
-import ProtectedRoute from "../../utils/ProtectedRoute";
+
+
 
 function App() {
+ 
+
   return (
     <Provider store={store}>
       <div className="App">
         <Router>
-          {/* <AppHeader /> */}
+          <AppHeader />
           <Routes>
-            <Route path="/" element={<AppHeader />}>
-              <Route index element={<HomePage />} />
-              <Route
-                path="/ingredients/:id"
-                element={<IngredientPage  />}
-              />
-              <Route path="forgot-password" element={<ForgotPassword />} />
-              <Route path="forgot-password-2" element={<ForgotPasswordTwo />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-              <Route path="reset-password" element={<ResetPassword />} />
+            <Route path="/" element={<HomePage />} />
 
-              <Route path="profile/*" element={
-                <ProtectedRoute> 
-                  <Profile />
-                </ProtectedRoute>
-                }
-                >
-                <Route path="orders" element={<OrdersProfile />} />
-              </Route>
+            <Route path="forgot-password" element={<ForgotPassword />} />
+            <Route path="forgot-password-2" element={<ForgotPasswordTwo />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+
+            <Route path="profile/*" element={<Profile />}>
+              <Route path="orders" element={<OrdersProfile />} />
             </Route>
           </Routes>
         </Router>

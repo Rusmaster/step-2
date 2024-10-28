@@ -101,74 +101,7 @@ const handleNameChange =(e: ChangeEvent<HTMLInputElement>) => {
           {hasError && <p>Error during registration</p>}
         </div>
       </form>
-
-      {/* <div className={styles.InputOne}>
-        
-        <Input
-          type={"text"}
-          placeholder={"Имя"}
-           onChange={handleNameChange} // Используем типизированный обработчик
-          value={name}
-          name={"name"}
-          error={false}
-          ref={nameInputRef} // Передаем реф
-          onIconClick={onIconClick}
-          errorText={"Ошибка"}
-          size={"default"}
-          extraClass="ml-1"
-         // onChange={(e) => setName(e.target.value)}
-          onPointerEnterCapture={() => {}} // Передаем пустую функцию
-          onPointerLeaveCapture={() => {}} // Передаем пустую функцию
-        />
-      </div>
-      <div className={styles.InputTwo}>
-        <Input
-          type={"text"}
-          placeholder={"E-mail"}
-          //onChange={handleEmailChange} // Используем типизированный обработчик
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
-          name={"email"}
-          error={false}
-          ref={emailInputRef} // Передаем реф
-          onIconClick={onIconClick}
-          errorText={"Ошибка"}
-          size={"default"}
-          extraClass="ml-1"
-          onPointerEnterCapture={() => {}} // Передаем пустую функцию
-          onPointerLeaveCapture={() => {}} // Передаем пустую функцию
-        />
-      </div>
-      <div className={styles.InputTwo}>
-        <Input
-          type={isSwitchingPassword ? "text" : "password"}
-          placeholder={"Пароль"}
-          //onChange={handlePasswordChange} // Используем типизированный обработчик
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          name={"pass"}
-          error={false}
-          icon={"ShowIcon"}
-          ref={inputPasswordRef} // Передаем реф
-          onIconClick={switchingPassword}
-          errorText={"Ошибка"}
-          size={"default"}
-          extraClass="ml-1"
-          onPointerEnterCapture={() => {}} // Передаем пустую функцию
-          onPointerLeaveCapture={() => {}} // Передаем пустую функцию
-        />
-      </div>
-      <div className={styles.buttom}>
-        <Button
-          htmlType="button"
-          type="primary"
-          size="medium"
-          disabled={isLoading}
-        >
-          Зарегистрироваться
-        </Button>
-      </div> */}
-
+      
       <div className={styles.footerLinks}>
         <p className="text text_type_main-default mt-2">
           Уже зарегистрированны?

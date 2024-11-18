@@ -1,15 +1,22 @@
 import React from "react";
 import styles from "./styles.module.css";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Button } from "@ya.praktikum/react-developer-burger-ui-components";
+import {
+  Button,
+} from "@ya.praktikum/react-developer-burger-ui-components";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../../../services/userslice/userSlice"; // Импорт экшена для выхода
-import { AppDispatch, RootState } from "../../../services/store"; // Типизация dispatch
-// import OrdersProfile from "./OrdersProfile/OrdersProfile";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ProfileHome from "./ProfileHome";
+import { logoutUser } from "../../../services/userslice/userSlice";// Импорт экшена для выхода
+import { AppDispatch, RootState } from "../../../services/store";// Типизация dispatch
+import OrdersProfile from "./OrdersProfile/OrdersProfile";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
 
-const Profile: React.FC = () => {
+} from "react-router-dom";
+
+
+const Profile:React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -35,13 +42,11 @@ const Profile: React.FC = () => {
   return (
     <div className={styles.box}>
       <div className={styles.leftBox}>
-        <nav>
-          <ul className={styles.navbar}>
+        <nav className="navbar">
+          <ul>
             <li>
               <NavLink
                 to=""
-                end
-                // to="profile"
                 className={({ isActive }) => (isActive ? styles.active : "")}
               >
                 Профиль
@@ -64,10 +69,10 @@ const Profile: React.FC = () => {
         </nav>
       </div>
       <div className={styles.rightBox}>
-        {/* <ProfileHome /> */}
+
         <Outlet />
       </div>
     </div>
   );
-};
+}
 export default Profile;

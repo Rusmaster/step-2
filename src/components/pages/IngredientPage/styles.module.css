@@ -1,0 +1,24 @@
+h1, h2 {
+    text-align: center;
+}
+.ingredientInfo{
+    display: block;
+    margin: 0 auto;
+    width: 560px;
+}
+.ingredientInfoBox{
+    display:flex;
+   flex-wrap: wrap;
+    gap: 22px;
+    justify-content: center;
+}
+.img{
+     margin: 0 auto;
+    display: flex;
+}
+.textIngredient{
+    text-align: center;
+    color: #858181;
+    font-weight: 600;
+
+}

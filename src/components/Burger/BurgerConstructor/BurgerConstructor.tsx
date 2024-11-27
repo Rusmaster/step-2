@@ -84,6 +84,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
     }
   }, [ingredients, bun]);
 
+  ///
   const addIngredientToConstructor = (ingredient: Product) => {
     const ingredientWithId = { ...ingredient, uuid: uuidv4() };
     if (ingredient.type === "bun") {
@@ -133,18 +134,18 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
   const [isModalActive, setIsModalActive] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
 
- const handleOrderClick = () => {
-   if (!isAuthenticated) {
-     navigate("/login");
-     return;
-   }
+  const handleOrderClick = () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
 
-   if (bun && ingredients.length > 0) {
-     const ingredientIds = ingredients.map((ingredient) => ingredient._id);
-     setIsModalActive(true);
-     dispatch(sendOrderThunk([bun._id, ...ingredientIds]));
-   }
- };
+    if (bun && ingredients.length > 0) {
+      const ingredientIds = ingredients.map((ingredient) => ingredient._id);
+      setIsModalActive(true);
+      dispatch(sendOrderThunk([bun._id, ...ingredientIds]));
+    }
+  };
 
   return (
     <section className={styles.constructorBox}>

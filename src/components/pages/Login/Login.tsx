@@ -54,6 +54,7 @@ const Login: React.FC = () => {
       });
   };
 
+  ///
   return (
     <div className={styles.RegistrationBlock}>
       <h2 className={styles.title}>Вход</h2>

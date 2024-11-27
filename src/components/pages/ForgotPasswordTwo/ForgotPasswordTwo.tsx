@@ -8,6 +8,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
 
+///
 const ForgotPasswordTwo: React.FC = () => {
 
   const[newpassword, setNewpassword] = useState<string>("");

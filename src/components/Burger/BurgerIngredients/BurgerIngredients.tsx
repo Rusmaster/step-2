@@ -18,6 +18,7 @@ interface IngredientProps {
   onClick: (data: Product) => void; // Добавляем проп для обработчика клика
 }
 
+///
 const Ingredient: React.FC<IngredientProps> = ({ data, count, onClick }) => {
 
   const [{ isDragging }, dragRef] = useDrag(() => ({

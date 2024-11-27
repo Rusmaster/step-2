@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../services/store";
 
+///
 interface ProtectedRouteProps {
   children: JSX.Element | JSX.Element[]; // Измените тип children, чтобы поддерживать несколько элементов
 }

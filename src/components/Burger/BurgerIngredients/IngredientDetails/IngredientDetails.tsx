@@ -1,6 +1,7 @@
 import React from "react";
 import ingridient from "./ingridient.module.css";
 
+///
 interface IngredientDetailsProps {
   name: string;
   calories: number;

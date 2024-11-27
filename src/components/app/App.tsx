@@ -17,6 +17,8 @@ import IngredientPage from "../pages/IngredientPage/IngredientPage";
 import ProtectedRoute from "../../utils/ProtectedRoute";
 import ProfileHome from "../pages/Profile/ProfileHome";
 
+///
+
 function App() {
   return (
     <Provider store={store}>

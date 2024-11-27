@@ -13,6 +13,7 @@ const Profile: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
+  ///
   // Получаем данные пользователя из Redux
   //const { name } = useSelector((state: RootState) => state.user);
   // Получаем refreshToken из Redux или локального хранилища

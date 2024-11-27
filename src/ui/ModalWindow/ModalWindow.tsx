@@ -9,6 +9,7 @@ interface ModalProps {
   children: React.ReactNode;
 }
 
+///
 const Modal: React.FC<ModalProps> = ({
   active,
   setActive,

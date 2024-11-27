@@ -20,7 +20,8 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
 
   return (
     <>
-      {/* Проверка статуса и orderId */}
+    
+      {/* /Проверка статуса и orderId */}
       {orderStatus === "loading" && <p>Загрузка...</p>}
       {orderStatus === "succeeded" && orderId ? (
         <>

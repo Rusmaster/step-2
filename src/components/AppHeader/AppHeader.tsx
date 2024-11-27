@@ -15,6 +15,9 @@ import {
 } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "./../../services/store"; // Импорт состояния из Redux
+
+
+///
 const AppHeader = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Получаем текущий путь

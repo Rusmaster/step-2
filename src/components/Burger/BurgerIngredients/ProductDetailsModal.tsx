@@ -4,7 +4,7 @@ import ModalWindow from "../../../ui/ModalWindow/ModalWindow";
 import IngredientDetails from "./IngredientDetails";
 import { useNavigate } from "react-router-dom"; 
 interface ProductDetailsModalProps {
- 
+  ///
   product: Product | null;
   isActive: boolean;
   onClose: () => void;

@@ -18,8 +18,8 @@ const ForgotPassword: React.FC = () => {
   //Состояние для обработки загрузки и ошибок
 
   const { loading, error } = useSelector((state: RootState) => state.user);
- const dispatch: AppDispatch = useDispatch();
- const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
 
   const emailInputRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null); // Типизация для рефа
@@ -35,7 +35,8 @@ const ForgotPassword: React.FC = () => {
     alert("Icon Click Callback");
   };
 
-  // Обработчик отправки формы
+  //
+  ///Обработчик отправки формы
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -76,7 +77,12 @@ const ForgotPassword: React.FC = () => {
         </div>
 
         <div className={styles.buttom}>
-          <Button htmlType="submit" type="primary" size="medium" disabled={loading}>
+          <Button
+            htmlType="submit"
+            type="primary"
+            size="medium"
+            disabled={loading}
+          >
             {loading ? "Загрузка..." : "Восстановить"}
           </Button>
         </div>

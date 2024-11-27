@@ -4,6 +4,7 @@ import checkResponse from "../../utils/checkResponse";
 
 
 
+///
 export const fetchIngredients = createAsyncThunk(
   "ingredients/fetchIngredients",
   async (_, { rejectWithValue }) => {

@@ -8,6 +8,7 @@ interface OrderResponse {
 }
 
 // Типи состояния
+///
 interface OrderState {
   orderId: string | null;
   orderStatus: "idle" | "loading" | "succeeded" | "failed";

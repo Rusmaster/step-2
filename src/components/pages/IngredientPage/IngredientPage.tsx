@@ -38,6 +38,7 @@ const IngredientPage: React.FC = () => {
     return <div>Ингредиент не найден</div>;
   }
 
+  ///
   return (
     <div className={styles.ingredientInfo}>
       <h1>Детали ингредиента</h1>
